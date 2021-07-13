@@ -20,6 +20,7 @@ class CuentaTest {
         String real = cuenta.getPersona();
 
        // Assert (puedo poner Assertions.assertEquals
+        assertNotNull(real);
         assertEquals(esperado, real);
         assertTrue(real.equals("Nuria"));
 
@@ -32,6 +33,7 @@ class CuentaTest {
         Cuenta cuenta = new Cuenta("Andres", new BigDecimal("1000.12345"));
 
         //Assert
+        assertNotNull(cuenta.getSaldo());
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
         Assertions.assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
         //mira q sea mayor que cero con el compareTo, devuelve 1 porque es true, como es mayor que cero es true
@@ -53,4 +55,23 @@ class CuentaTest {
       assertEquals(cuenta2, cuenta);
   }
 
+  @Test
+  void testDebitoCuenta() {
+      Cuenta cuenta = new Cuenta("Nuria Calabrese", new BigDecimal("1000.9777"));
+      cuenta.debito(new BigDecimal(100));
+      assertNotNull(cuenta.getSaldo());
+      assertEquals(900, cuenta.getSaldo().intValue());
+      //aqui debe ser 900 porque ya hemos restado 100, plain porque tiene q coger el valor del saldo con decimales
+      assertEquals("900.9777", cuenta.getSaldo().toPlainString());
+  }
+
+    @Test
+    void testCreditoCuenta() {
+        Cuenta cuenta = new Cuenta("Nuria Calabrese", new BigDecimal("1000.9777"));
+        cuenta.credito(new BigDecimal(100));
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(1100, cuenta.getSaldo().intValue());
+        //aqui debe ser 900 porque ya hemos restado 100, plain porque tiene q coger el valor del saldo con decimales
+        assertEquals("1100.9777", cuenta.getSaldo().toPlainString());
+    }
 }

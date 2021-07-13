@@ -25,17 +25,21 @@ public class Cuenta {
         this.saldo = saldo;
     }
 
+
+    public void debito(BigDecimal monto){
+        this. saldo = this.saldo.subtract(monto);
+    }
+
+    public void credito(BigDecimal monto){
+        this.saldo = this.saldo.add(monto);
+    }
+
+
     public Cuenta(String persona, BigDecimal saldo) {
         this.persona = persona;
         this.saldo = saldo;
     }
 
-    public Cuenta(String persona) {
-        this.persona = persona;
-    }
-
-    public Cuenta() {
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -52,3 +56,4 @@ public class Cuenta {
         return this.persona.equals(c.getPersona()) && this.saldo.equals(c.getSaldo());
     }
 }
+
