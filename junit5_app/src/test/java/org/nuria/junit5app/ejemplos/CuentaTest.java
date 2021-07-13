@@ -2,6 +2,9 @@ package org.nuria.junit5app.ejemplos;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.nuria.junit5app.ejemplos.exceptions.DineroInsuficienteException;
+import org.nuria.junit5app.ejemplos.models.Banco;
+import org.nuria.junit5app.ejemplos.models.Cuenta;
 
 import java.math.BigDecimal;
 
@@ -73,5 +76,44 @@ class CuentaTest {
         assertEquals(1100, cuenta.getSaldo().intValue());
         //aqui debe ser 900 porque ya hemos restado 100, plain porque tiene q coger el valor del saldo con decimales
         assertEquals("1100.9777", cuenta.getSaldo().toPlainString());
+    }
+
+  @Test
+  void testDineroInsuficienteExceptionCuenta() {
+      Cuenta cuenta = new Cuenta("Nuria Calabrese", new BigDecimal("1000.9777"));
+      Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
+         cuenta.debito(new BigDecimal(1500));
+      });
+      String actual = exception.getMessage();
+      String esperado = "Dinero Insuficiente";
+      assertEquals(esperado, actual);
+  }
+
+  @Test
+  void testTransferirDineroCuentas() {
+      Cuenta cuenta1 = new Cuenta("Nuria Calabrese", new BigDecimal("2500"));
+      Cuenta cuenta2 = new Cuenta("Barbara Calabrese", new BigDecimal("1500.8989"));
+      Banco banco = new Banco();
+      banco.setNombre("Banco del estado");
+      banco.transferir(cuenta2, cuenta1, new BigDecimal(500));
+      assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+      assertEquals("3000", cuenta1.getSaldo().toPlainString());
+
+  }
+
+    @Test
+    void testRelacionBancoCuentas() {
+        Cuenta cuenta1 = new Cuenta("Nuria Calabrese", new BigDecimal("2500"));
+        Cuenta cuenta2 = new Cuenta("Barbara Calabrese", new BigDecimal("1500.8989"));
+        Banco banco = new Banco();
+        banco.addCuenta(cuenta1);
+        banco.addCuenta(cuenta2);
+        banco.setNombre("Banco del estado");
+        banco.transferir(cuenta2, cuenta1, new BigDecimal(500));
+        assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+        assertEquals("3000", cuenta1.getSaldo().toPlainString());
+
+        assertEquals(2, banco.getCuentas().size());
+
     }
 }
